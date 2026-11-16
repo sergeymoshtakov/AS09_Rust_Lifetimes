@@ -63,6 +63,8 @@ fn parse_prim_op(input: &str) -> IResult<&str, PrimOp> {
         map(tag("=="), |_| PrimOp::Eq),
         map(tag("<"), |_| PrimOp::Lt),
         map(tag(">"), |_| PrimOp::Gt),
+        map(tag("&&"), |_| PrimOp::And),
+        map(tag("||"), |_| PrimOp::Or),
     ))(input)
 }
 
@@ -82,10 +84,9 @@ fn parse_identifier(input: &str) -> IResult<&str, String> {
 
 // Syntax: λx. x
 fn parse_abs(input: &str) -> IResult<&str, Term> {
-    // TODO: Also accept Haskell style notation: \x -> x
-    let (input, _) = ws(char('λ'))(input)?; 
+    let (input, _) = ws(alt((tag("λ"), tag("\\"))))(input)?;
     let (input, var) = ws(parse_identifier)(input)?;
-    let (input, _) = ws(char('.'))(input)?; 
+    let (input, _) = ws(alt((tag("."), tag("->"))))(input)?;
     let (input, body) = ws(parse_expression)(input)?;
     Ok((input, abs(&var, body)))
 }
@@ -167,5 +168,11 @@ mod tests {
         Ok(())
     }
 
-    // TODO: Add some more tests to cover the remaining syntax elements
+    #[test]
+    fn test_haskell_abs() -> R {
+        let input = "(\\x -> (x y))";
+        let (_, term) = parse_expression(input)?;
+        assert_eq!(abs("x", app(var("x"), var("y"))), term);
+        Ok(())
+    }
 }

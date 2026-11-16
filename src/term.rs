@@ -21,7 +21,8 @@ pub enum PrimOp {
     Eq,  // ==
     Lt,  // <
     Gt,  // >
-    // TODO: add `&&` and `||` operators
+    And, // &&
+    Or   // ||
 }
 
 // Binds names to terms
@@ -95,4 +96,12 @@ pub fn lt(t1: Term, t2: Term) -> Term {
 
 pub fn gt(t1: Term, t2: Term) -> Term {
     primop(PrimOp::Gt, t1, t2)
+}
+
+pub fn and(t1: Term, t2: Term) -> Term {
+    primop(PrimOp::And, t1, t2)
+}
+
+pub fn or(t1: Term, t2: Term) -> Term {
+    primop(PrimOp::Or, t1, t2)
 }

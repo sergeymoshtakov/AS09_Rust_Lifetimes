@@ -59,9 +59,8 @@ mod tests {
 
     #[test]
     fn test_fibonacci() {
-        // TODO: implement the fibonacci function https://en.wikipedia.org/wiki/Fibonacci_sequence
         let input = r#"
-            fib = TODO: Implement fibonacci function;
+            fib = (λn. (if (n < 2) then n else ((fib (n - 1)) + (fib (n - 2)))));
             main = (fib 10);
         "#;
 
