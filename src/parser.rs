@@ -84,11 +84,22 @@ fn parse_identifier(input: &str) -> IResult<&str, String> {
 
 // Syntax: λx. x
 fn parse_abs(input: &str) -> IResult<&str, Term> {
-    let (input, _) = ws(alt((tag("λ"), tag("\\"))))(input)?;
-    let (input, var) = ws(parse_identifier)(input)?;
-    let (input, _) = ws(alt((tag("."), tag("->"))))(input)?;
-    let (input, body) = ws(parse_expression)(input)?;
-    Ok((input, abs(&var, body)))
+    alt((
+        |i| {
+            let (i, _) = ws(tag("λ"))(i)?;
+            let (i, var) = ws(parse_identifier)(i)?;
+            let (i, _) = ws(tag("."))(i)?;
+            let (i, body) = ws(parse_expression)(i)?;
+            Ok((i, abs(&var, body)))
+        },
+        |i| {
+            let (i, _) = ws(tag("\\"))(i)?;
+            let (i, var) = ws(parse_identifier)(i)?;
+            let (i, _) = ws(tag("->"))(i)?;
+            let (i, body) = ws(parse_expression)(i)?;
+            Ok((i, abs(&var, body)))
+        },
+    ))(input)
 }
 
 // Syntax: x y

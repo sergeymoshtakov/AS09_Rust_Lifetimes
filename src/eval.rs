@@ -63,14 +63,16 @@ pub fn eval(env: &Env, term: &Term) -> Result<Term, String> {
             match op {
                 PrimOp::Add | PrimOp::Sub | PrimOp::Mul | PrimOp::Div  => {
                     if let (Term::Int(n1), Term::Int(n2)) = (&l, &r) {
-                        if matches!(op, PrimOp::Div) && *n2 == 0 {
-                            return Err("division by zero".to_string());
-                        }
                         Ok(i(match op {
                             PrimOp::Add => n1 + n2,
                             PrimOp::Sub => n1 - n2,
                             PrimOp::Mul => n1 * n2,
-                            PrimOp::Div => n1 / n2,
+                            PrimOp::Div => {
+                                if *n2 == 0 {
+                                    return Err("division by zero".to_string());
+                                }
+                                n1 / n2
+                            }
                             _ => unreachable!()
                         }))
                     } else {
