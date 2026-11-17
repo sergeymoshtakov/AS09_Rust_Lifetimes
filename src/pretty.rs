@@ -26,6 +26,8 @@ pub fn pretty_print(term: &Term) -> String {
                 PrimOp::Eq => "==",
                 PrimOp::Lt => "<",
                 PrimOp::Gt => ">",
+                PrimOp::And => "&&",
+                PrimOp::Or => "||",
             },
             pretty_print(t2)
         ),
